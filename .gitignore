@@ -1,0 +1,19 @@
+# Monorepo gitignore
+
+node_modules/
+.env
+.env.local
+.env.*
+
+# Frontend
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/next-env.d.ts
+
+# Backend/Tools
+backend/generated/
+.DS_Store
+*.log
+dist/
+build/

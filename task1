@@ -1,0 +1,20 @@
+# Task: AI-Powered Property Listing and Search Platform
+
+- [ ] **Module 1: Project Initialization & Database Schema** [/]
+    - [ ] Initialize Node.js backend
+    - [ ] Define PostgreSQL/AlloyDB schema (Properties, Users, Inquiries)
+    - [ ] Set up database connection and migrations
+- [ ] **Module 2: MCP Server Implementation**
+    - [ ] Create MCP server for property data access
+    - [ ] Define MCP tools for search and retrieval
+- [ ] **Module 3: LLM Agent & Backend API**
+    - [ ] Implement backend API endpoints
+    - [ ] Integrate LLM (OpenAI/Gemini) with MCP tools
+    - [ ] Create search and listing logic
+- [ ] **Module 4: Frontend Development**
+    - [ ] Design and implement property listing UI
+    - [ ] Add AI-powered search interface
+    - [ ] Implement property details and inquiry forms
+- [ ] **Module 5: Vector Search & Advanced Features**
+    - [ ] Set up vector search for semantic property queries
+    - [ ] Final polishing and production readiness

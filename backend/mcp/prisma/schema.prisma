@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  SEEKER
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String?
+  role      Role       @default(SEEKER)
+  createdAt DateTime   @default(now())
+  Property  Property[]
+  Favorite  Favorite[]
+}
+
+model Property {
+  id               String     @id @default(uuid())
+  title            String
+  description      String?
+  price            Float
+  location_city    String
+  location_state   String?
+  location_country String?
+  latitude         Float?
+  longitude        Float?
+  bedrooms         Int
+  bathrooms        Int
+  area_sqft        Float
+  property_type    String
+  amenities        String?    @default("{}")
+  images           String?    @default("[]")
+  embedding        String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  ownerId          String
+  owner            User       @relation(fields: [ownerId], references: [id])
+  Favorite         Favorite[]
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  user       User     @relation(fields: [userId], references: [id])
+  property   Property @relation(fields: [propertyId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, propertyId])
+}
