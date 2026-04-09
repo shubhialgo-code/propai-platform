@@ -32,7 +32,7 @@ async function main() {
       property_type: "Apartment",
       ownerId: user.id,
       amenities: JSON.stringify(["Swimming Pool", "Gym", "24/7 Security", "Power Backup"]),
-      images: JSON.stringify(["https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1000"]),
+      images: JSON.stringify(["/properties/modern_2bhk.png"]),
     },
     {
       title: "Luxury Villa in Jubilee Hills",
@@ -47,7 +47,7 @@ async function main() {
       property_type: "Villa",
       ownerId: user.id,
       amenities: JSON.stringify(["Private Pool", "Home Theatre", "Landscaped Garden", "Smart Home"]),
-      images: JSON.stringify(["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1000"]),
+      images: JSON.stringify(["/properties/luxury_villa.png"]),
     },
     {
       title: "Premium 3BHK in Kondapur",
@@ -62,7 +62,7 @@ async function main() {
       property_type: "Apartment",
       ownerId: user.id,
       amenities: JSON.stringify(["Clubhouse", "Children's Play Area", "Jogging Track", "Intercom"]),
-      images: JSON.stringify(["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&q=80&w=1000"]),
+      images: JSON.stringify(["/properties/premium_3bhk.png"]),
     },
     {
       title: "Spacious 3BHK at Banjara Hills",
@@ -77,7 +77,7 @@ async function main() {
       property_type: "Apartment",
       ownerId: user.id,
       amenities: JSON.stringify(["Balcony", "Private Terrace", "24/7 Security"]),
-      images: JSON.stringify(["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1000"]),
+      images: JSON.stringify(["/properties/spacious_3bhk.png"]),
     },
     {
       title: "Cozy Studio in Hitech City",
@@ -92,7 +92,7 @@ async function main() {
       property_type: "Apartment",
       ownerId: user.id,
       amenities: JSON.stringify(["Furnished", "Gym Access", "Near Metro"]),
-      images: JSON.stringify(["https://images.unsplash.com/photo-1536376074432-c264d4cd4908?auto=format&fit=crop&q=80&w=1000"]),
+      images: JSON.stringify(["/properties/cozy_studio.png"]),
     }
   ];
 

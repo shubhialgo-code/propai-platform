@@ -13,6 +13,7 @@ async function getAgentResponse(userQuery) {
   const transport = new StdioClientTransport({
     command: nodePath,
     args: [mcpServerPath],
+    env: process.env,
   });
 
   const mcpClient = new Client({

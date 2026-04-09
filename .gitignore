@@ -17,3 +17,6 @@ backend/generated/
 *.log
 dist/
 build/
+*.db
+*.db-journal
+*.sqlite
