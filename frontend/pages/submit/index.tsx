@@ -32,7 +32,7 @@ export default function SubmitProperty() {
       });
       setSuccess(true);
     } catch (err: unknown) {
-      const error = err as any;
+      const error = err as { response?: { data?: { error?: string } }; message: string };
       alert("Error submitting property: " + (error.response?.data?.error || error.message));
     } finally {
       setIsSubmitting(false);
