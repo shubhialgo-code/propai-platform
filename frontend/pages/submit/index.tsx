@@ -31,8 +31,9 @@ export default function SubmitProperty() {
         area_sqft: parseFloat(formData.area_sqft),
       });
       setSuccess(true);
-    } catch (error: any) {
-      alert("Error submitting property: " + (error.response?.data?.error || (error as Error).message));
+    } catch (err: unknown) {
+      const error = err as any;
+      alert("Error submitting property: " + (error.response?.data?.error || error.message));
     } finally {
       setIsSubmitting(false);
     }

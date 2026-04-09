@@ -210,7 +210,7 @@ export default function SearchPage() {
             </div>
           ) : properties.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2">
-              {properties.map((p: any) => (
+              {properties.map((p: Property) => (
                 <PropertyCard key={p.id} property={p} />
               ))}
             </div>
