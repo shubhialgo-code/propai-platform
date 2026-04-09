@@ -5,6 +5,10 @@ import { Search, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { propertyService } from "@/services/api.service";
 
+interface Property {
+  location_city: string;
+}
+
 export default function Hero() {
   const [query, setQuery] = useState("");
   const [availableLocations, setAvailableLocations] = useState<string[]>([]);
@@ -14,7 +18,7 @@ export default function Hero() {
     const fetchLocations = async () => {
       try {
         const props = await propertyService.getAll({});
-        const locs = Array.from(new Set(props.map((p: any) => p.location_city).filter(Boolean))) as string[];
+        const locs = Array.from(new Set(props.map((p: Property) => p.location_city).filter(Boolean))) as string[];
         setAvailableLocations(locs);
       } catch (e) {
         console.error("Failed to fetch locations", e);

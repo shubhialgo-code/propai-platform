@@ -1,12 +1,26 @@
-"use client";
-
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Hero from "@/components/Hero";
 import PropertyCard from "@/components/PropertyCard";
 import { propertyService } from "@/services/api.service";
 
+interface Property {
+  id: string;
+  title: string;
+  price: number;
+  location_city: string;
+  location_state?: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqft: number;
+  images?: string | string[];
+  property_type: string;
+  description?: string;
+  amenities?: string | string[];
+}
+
 export default function Home() {
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -14,10 +28,10 @@ export default function Home() {
       try {
         const data = await propertyService.getAll();
         // Parse JSON strings from SQLite into arrays
-        const parsed = data.map((p: any) => ({
+        const parsed = data.map((p: Property) => ({
           ...p,
-          images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,
-          amenities: typeof p.amenities === "string" ? JSON.parse(p.amenities) : p.amenities,
+          images: typeof p.images === "string" ? JSON.parse(p.images) : (p.images || []),
+          amenities: typeof p.amenities === "string" ? JSON.parse(p.amenities) : (p.amenities || []),
         }));
         setProperties(parsed);
       } catch (error) {
@@ -36,9 +50,9 @@ export default function Home() {
       <section className="container mx-auto px-4 py-12 md:px-8">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-slate-900">Featured Properties</h2>
-          <a href="/search" className="text-sm font-semibold text-indigo-600 hover:underline">
+          <Link href="/search" className="text-sm font-semibold text-indigo-600 hover:underline">
             View All
-          </a>
+          </Link>
         </div>
         
         {isLoading ? (
@@ -65,9 +79,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="mb-4 text-3xl font-bold">Ready to Find Your Home?</h2>
           <p className="mb-8 text-indigo-100">Our AI assistant is ready to help you discover the best deals in Hyderabad.</p>
-          <a href="/search" className="inline-block rounded-full bg-white px-8 py-3 font-bold text-indigo-600 hover:bg-slate-100 transition-colors shadow-lg active:scale-95">
+          <Link href="/search" className="inline-block rounded-full bg-white px-8 py-3 font-bold text-indigo-600 hover:bg-slate-100 transition-colors shadow-lg active:scale-95">
             Ask PropAI Now
-          </a>
+          </Link>
         </div>
       </section>
       
@@ -79,3 +93,4 @@ export default function Home() {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, Send, X, Bot, User } from "lucide-react";
+import { MessageSquare, Send, X, Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { aiService } from "@/services/api.service";
 
@@ -31,7 +31,7 @@ export default function ChatBot() {
     try {
       const response = await aiService.query(userMessage);
       setMessages((prev) => [...prev, { role: "bot", content: response }]);
-    } catch (error) {
+    } catch (_error) {
       setMessages((prev) => [...prev, { role: "bot", content: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." }]);
     } finally {
       setIsLoading(false);

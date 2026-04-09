@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Heart, User, Home, PlusCircle, MessageSquare } from "lucide-react";
+import { Search, Heart, User, Home, PlusCircle } from "lucide-react";
 
 export default function Navbar() {
   return (

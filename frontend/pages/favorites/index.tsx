@@ -1,13 +1,24 @@
-"use client";
-
 import { useState, useEffect } from "react";
-import { Heart, Home, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import PropertyCard from "@/components/PropertyCard";
 
+interface Property {
+  id: string;
+  title: string;
+  price: number;
+  location_city: string;
+  location_state?: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqft: number;
+  images?: string | string[];
+  property_type: string;
+  description?: string;
+}
+
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [favorites, setFavorites] = useState<Property[]>([]);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -15,11 +26,9 @@ export default function FavoritesPage() {
         const res = await fetch("http://localhost:5000/api/favorites?userId=user-123");
         const data = await res.json();
         // The API returns an array of { id, userId, propertyId, property: { ... } }
-        setFavorites(data.map((fav: any) => fav.property));
+        setFavorites(data.map((fav: { property: Property }) => fav.property));
       } catch (err) {
         console.error("Error fetching favorites", err);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchFavorites();
@@ -34,7 +43,7 @@ export default function FavoritesPage() {
 
       {favorites.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {favorites.map((p) => (
+          {favorites.map((p: Property) => (
             <PropertyCard key={p.id} property={p} />
           ))}
         </div>
@@ -44,7 +53,7 @@ export default function FavoritesPage() {
             <Heart className="h-12 w-12 text-slate-200" />
           </div>
           <h2 className="mb-2 text-2xl font-bold">No saved properties yet</h2>
-          <p className="mb-8 max-w-sm text-slate-500">
+          <p className="mb-8 max-sm text-slate-500">
             Keep track of the homes you love. Click the heart icon on any property to save it for later.
           </p>
           <Link 

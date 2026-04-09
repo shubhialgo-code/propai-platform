@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 export const propertyService = {
-  getAll: async (params = {}) => {
+  getAll: async (params: Record<string, string | number> = {}) => {
     const response = await api.get('/properties', { params });
     return response.data;
   },
@@ -18,11 +18,11 @@ export const propertyService = {
     const response = await api.get(`/properties/${id}`);
     return response.data;
   },
-  create: async (data: any) => {
+  create: async (data: Record<string, unknown>) => {
     const response = await api.post('/properties', data);
     return response.data;
   },
-  update: async (id: string, data: any) => {
+  update: async (id: string, data: Record<string, unknown>) => {
     const response = await api.put(`/properties/${id}`, data);
     return response.data;
   },

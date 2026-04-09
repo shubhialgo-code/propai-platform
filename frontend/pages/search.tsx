@@ -1,13 +1,34 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Search, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
 import { propertyService } from "@/services/api.service";
 
+interface Property {
+  id: string;
+  title: string;
+  price: number;
+  location_city: string;
+  location_state?: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqft: number;
+  images?: string | string[];
+  property_type: string;
+  description?: string;
+  amenities?: string | string[];
+}
+
+interface FilterState {
+  location: string;
+  minPrice: string;
+  maxPrice: string;
+  propertyType: string;
+  bedrooms: string;
+}
+
 export default function SearchPage() {
-  const [properties, setProperties] = useState([]);
-  const [filters, setFilters] = useState({
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [filters, setFilters] = useState<FilterState>({
     location: "",
     minPrice: "",
     maxPrice: "",
@@ -17,39 +38,21 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [availableLocations, setAvailableLocations] = useState<string[]>([]);
 
-  // Fetch on initial load
-  useEffect(() => {
-    fetchProperties();
-    fetchLocations();
-  }, []);
-
-  const fetchLocations = async () => {
-    try {
-      const allData = await propertyService.getAll({});
-      const locs = Array.from(new Set(allData.map((p: any) => p.location_city).filter(Boolean))) as string[];
-      setAvailableLocations(locs);
-    } catch (e) {
-      console.error("Failed to fetch locations", e);
-    }
-  };
-
-  const fetchProperties = async () => {
+  const fetchProperties = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Build query params from filters
       const params: Record<string, string> = {};
       if (filters.location) params.location = filters.location;
-      if (filters.minPrice) params.minPrice = (parseFloat(filters.minPrice) * 100000).toString(); // Convert Lakh to actual
+      if (filters.minPrice) params.minPrice = (parseFloat(filters.minPrice) * 100000).toString(); 
       if (filters.maxPrice) params.maxPrice = (parseFloat(filters.maxPrice) * 100000).toString();
       if (filters.propertyType && filters.propertyType !== "All") params.propertyType = filters.propertyType;
       if (filters.bedrooms) params.bedrooms = filters.bedrooms.replace("+", "");
 
       const data = await propertyService.getAll(params);
-      // Parse JSON strings from SQLite into arrays
-      const parsed = data.map((p: any) => ({
+      const parsed = data.map((p: Property) => ({
         ...p,
-        images: typeof p.images === "string" ? JSON.parse(p.images) : p.images,
-        amenities: typeof p.amenities === "string" ? JSON.parse(p.amenities) : p.amenities,
+        images: typeof p.images === "string" ? JSON.parse(p.images) : (p.images || []),
+        amenities: typeof p.amenities === "string" ? JSON.parse(p.amenities) : (p.amenities || []),
       }));
       setProperties(parsed);
     } catch (error) {
@@ -57,7 +60,23 @@ export default function SearchPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters]);
+
+  const fetchLocations = useCallback(async () => {
+    try {
+      const allData = await propertyService.getAll({});
+      const locs = Array.from(new Set(allData.map((p: Property) => p.location_city).filter(Boolean))) as string[];
+      setAvailableLocations(locs);
+    } catch (e) {
+      console.error("Failed to fetch locations", e);
+    }
+  }, []);
+
+  // Fetch on initial load
+  useEffect(() => {
+    fetchProperties();
+    fetchLocations();
+  }, [fetchProperties, fetchLocations]);
 
   const handleApplyFilters = () => {
     fetchProperties();

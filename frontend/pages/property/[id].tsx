@@ -6,10 +6,25 @@ import { ArrowLeft, MapPin, BedDouble, Bath, Square, Heart, Share2, Shield, Mail
 import Image from "next/image";
 import { propertyService } from "@/services/api.service";
 
+interface Property {
+  id: string;
+  title: string;
+  price: number;
+  location_city: string;
+  location_state?: string;
+  bedrooms: number;
+  bathrooms: number;
+  area_sqft: number;
+  images?: string | string[];
+  property_type: string;
+  description?: string;
+  amenities?: string | string[];
+}
+
 export default function PropertyDetail() {
   const router = useRouter();
   const { id } = router.query;
-  const [property, setProperty] = useState<any>(null);
+  const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -80,19 +95,19 @@ export default function PropertyDetail() {
         </div>
 
         <div className="mb-12 grid gap-4 md:grid-cols-4 md:grid-rows-2 h-[500px]">
-          {property.images && property.images.length > 0 ? (
+          {property.images && Array.isArray(property.images) && property.images.length > 0 ? (
             <>
               {/* Main Image */}
               <div className="relative md:col-span-2 md:row-span-2 rounded-3xl overflow-hidden bg-slate-200 shadow-xl">
                 <Image src={property.images[0]} alt="Main" fill priority className="object-cover transition-transform hover:scale-105 duration-700" />
               </div>
               {/* Other Images up to 4 */}
-              {property.images.slice(1, 5).map((imgUrl: string, idx: number) => (
+              {(property.images as string[]).slice(1, 5).map((imgUrl: string, idx: number) => (
                 <div key={idx} className="relative rounded-3xl overflow-hidden bg-slate-200 shadow-lg">
                   <Image src={imgUrl} alt={`Image ${idx + 2}`} fill className="object-cover hover:scale-110 transition-transform duration-500" />
-                  {idx === 3 && property.images.length > 5 && (
+                  {idx === 3 && (property.images as string[]).length > 5 && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold cursor-pointer hover:bg-black/70 transition-colors">
-                      View all ({property.images.length})
+                      View all ({(property.images as string[]).length})
                     </div>
                   )}
                 </div>
