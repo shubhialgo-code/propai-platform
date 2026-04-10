@@ -34,3 +34,18 @@ jobs:
         npm install
         npm run lint
         npm run build
+
+  deploy:
+    name: Continuous Deployment
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Trigger Render Deployment
+      run: |
+        if [ -n "${{ secrets.RENDER_DEPLOY_HOOK }}" ]; then
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+        else
+          echo "Skipping deployment: RENDER_DEPLOY_HOOK secret not set."
+        fi
