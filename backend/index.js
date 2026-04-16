@@ -28,18 +28,18 @@ app.use('/api/favorites', favoriteRoutes);
 app.use('/api', aiRoutes);
 
 
-const server = app.listen(PORT, () => {
-  console.log(`Backend Server running on port ${PORT} [Monorepo Structure]`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  const server = app.listen(PORT, () => {
+    console.log(`Backend Server running on port ${PORT} [Monorepo Structure]`);
+  });
 
-server.on('error', (err) => {
-  console.error('Server error:', err);
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use.`);
-  }
-});
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use.`);
+    }
+  });
+}
 
-// Keep process alive
-setInterval(() => {
-  // Heartbeat to keep the event loop busy just in case
-}, 60000);
+// Export the app for Vercel serverless
+module.exports = app;

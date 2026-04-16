@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Heart, MapPin, BedDouble, Bath, Square, LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { favoriteService } from "@/services/api.service";
 
 interface PropertyProps {
   property: {
@@ -18,14 +19,28 @@ interface PropertyProps {
     property_type: string;
     description?: string;
   };
+  isSavedInitially?: boolean;
 }
 
-export default function PropertyCard({ property }: PropertyProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+const DEFAULT_USER_ID = "5459b8b1-85ac-41a1-b1c7-ddfa11a57c99";
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+export default function PropertyCard({ property, isSavedInitially = false }: PropertyProps) {
+  const [isFavorite, setIsFavorite] = useState(isSavedInitially);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsFavorite(!isFavorite);
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    try {
+      await favoriteService.save(DEFAULT_USER_ID, property.id);
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite on card", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Safe parsing for SQLite JSON strings

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Upload, Home, MapPin, IndianRupee, Bed, Bath, Square, Type } from "lucide-react";
-import axios from "axios";
+import { propertyService } from "@/services/api.service";
 
 export default function SubmitProperty() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ export default function SubmitProperty() {
     bathrooms: "2",
     area_sqft: "",
     property_type: "Apartment",
-    ownerId: "user-123", // Dummy owner ID
+    ownerId: "5459b8b1-85ac-41a1-b1c7-ddfa11a57c99", // Valid owner ID from DB
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -23,7 +23,7 @@ export default function SubmitProperty() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.post("http://localhost:5000/api/properties", {
+      await propertyService.create({
         ...formData,
         price: parseFloat(formData.price),
         bedrooms: parseInt(formData.bedrooms),

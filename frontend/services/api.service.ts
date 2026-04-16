@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_API_URL 
+  ? process.env.NEXT_PUBLIC_API_URL 
+  : process.env.NODE_ENV === 'production' 
+    ? '/api' 
+    : 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -36,6 +40,17 @@ export const aiService = {
   query: async (query: string) => {
     const response = await api.post('/ai-query', { query });
     return response.data.response;
+  },
+};
+
+export const favoriteService = {
+  save: async (userId: string, propertyId: string) => {
+    const response = await api.post('/favorites', { userId, propertyId });
+    return response.data;
+  },
+  getByUser: async (userId: string) => {
+    const response = await api.get('/favorites', { params: { userId } });
+    return response.data;
   },
 };
 

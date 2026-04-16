@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Search, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
 import PropertyCard from "@/components/PropertyCard";
-import { propertyService } from "@/services/api.service";
+import { propertyService, favoriteService } from "@/services/api.service";
+
+const DEFAULT_USER_ID = "5459b8b1-85ac-41a1-b1c7-ddfa11a57c99";
 
 interface Property {
   id: string;
@@ -28,6 +30,7 @@ interface FilterState {
 
 export default function SearchPage() {
   const [properties, setProperties] = useState<Property[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterState>({
     location: "",
     minPrice: "",
@@ -48,13 +51,18 @@ export default function SearchPage() {
       if (filters.propertyType && filters.propertyType !== "All") params.propertyType = filters.propertyType;
       if (filters.bedrooms) params.bedrooms = filters.bedrooms.replace("+", "");
 
-      const data = await propertyService.getAll(params);
+      const [data, favData] = await Promise.all([
+        propertyService.getAll(params),
+        favoriteService.getByUser(DEFAULT_USER_ID)
+      ]);
+
       const parsed = data.map((p: Property) => ({
         ...p,
         images: typeof p.images === "string" ? JSON.parse(p.images) : (p.images || []),
         amenities: typeof p.amenities === "string" ? JSON.parse(p.amenities) : (p.amenities || []),
       }));
       setProperties(parsed);
+      setFavorites(favData.map((f: any) => f.propertyId));
     } catch (error) {
       console.error("Error fetching properties", error);
     } finally {
@@ -211,7 +219,11 @@ export default function SearchPage() {
           ) : properties.length > 0 ? (
             <div className="grid gap-6 sm:grid-cols-2">
               {properties.map((p: Property) => (
-                <PropertyCard key={p.id} property={p} />
+                <PropertyCard 
+                  key={p.id} 
+                  property={p} 
+                  isSavedInitially={favorites.includes(p.id)} 
+                />
               ))}
             </div>
           ) : (

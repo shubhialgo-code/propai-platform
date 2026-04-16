@@ -17,22 +17,35 @@ interface Property {
   description?: string;
 }
 
+import { favoriteService } from "@/services/api.service";
+
+const DEFAULT_USER_ID = "5459b8b1-85ac-41a1-b1c7-ddfa11a57c99";
+
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/favorites?userId=user-123");
-        const data = await res.json();
+        const data = await favoriteService.getByUser(DEFAULT_USER_ID);
         // The API returns an array of { id, userId, propertyId, property: { ... } }
-        setFavorites(data.map((fav: { property: Property }) => fav.property));
+        setFavorites(data.map((fav: any) => fav.property));
       } catch (err) {
         console.error("Error fetching favorites", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchFavorites();
   }, []);
+
+  if (isLoading) return (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center p-10 text-center">
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent"></div>
+      <p className="mt-4 font-bold text-slate-400">Loading your favorites...</p>
+    </div>
+  );
 
   return (
     <div className="container mx-auto px-4 py-12 md:px-8">

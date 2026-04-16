@@ -205,7 +205,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           where: {
             OR: location ? [
               { location_city: { contains: location } },
-              { location_state: { contains: location } }
+              { location_state: { contains: location } },
+              { title: { contains: location } },
+              { description: { contains: location } }
             ] : undefined,
             price: { 
               gte: minPrice ?? undefined, 

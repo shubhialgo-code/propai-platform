@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ArrowLeft, MapPin, BedDouble, Bath, Square, Heart, Share2, Shield, Mail, Phone } from "lucide-react";
 import Image from "next/image";
-import { propertyService } from "@/services/api.service";
+import { propertyService, favoriteService } from "@/services/api.service";
 
 interface Property {
   id: string;
@@ -21,11 +21,15 @@ interface Property {
   amenities?: string | string[];
 }
 
+const DEFAULT_USER_ID = "5459b8b1-85ac-41a1-b1c7-ddfa11a57c99";
+
 export default function PropertyDetail() {
   const router = useRouter();
   const { id } = router.query;
   const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     // Wait for router to be ready and id to be available
@@ -43,6 +47,11 @@ export default function PropertyDetail() {
           images,
           amenities,
         });
+
+        // Check if already favorited
+        const favorites = await favoriteService.getByUser(DEFAULT_USER_ID);
+        const alreadySaved = favorites.some((f: any) => f.propertyId === id);
+        setIsSaved(alreadySaved);
       } catch (error) {
         console.error("Error fetching property", error);
       } finally {
@@ -51,6 +60,19 @@ export default function PropertyDetail() {
     };
     fetchProperty();
   }, [id, router.isReady]);
+
+  const toggleFavorite = async () => {
+    if (!property || isSaving) return;
+    setIsSaving(true);
+    try {
+      await favoriteService.save(DEFAULT_USER_ID, property.id);
+      setIsSaved(!isSaved);
+    } catch (error) {
+      console.error("Error toggling favorite", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   if (isLoading) return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center p-10 text-center">
@@ -88,8 +110,12 @@ export default function PropertyDetail() {
              <button className="flex h-12 w-12 items-center justify-center rounded-2xl border bg-white shadow-sm hover:bg-slate-50 transition-all active:scale-95">
                <Share2 className="h-5 w-5 text-slate-600" />
              </button>
-             <button className="flex h-12 w-12 items-center justify-center rounded-2xl border bg-white shadow-sm hover:bg-slate-50 transition-all active:scale-95">
-               <Heart className="h-5 w-5 text-slate-600 hover:text-red-500" />
+             <button 
+              onClick={toggleFavorite}
+              disabled={isSaving}
+              className={`flex h-12 w-12 items-center justify-center rounded-2xl border bg-white shadow-sm transition-all active:scale-95 ${isSaved ? 'border-red-100 bg-red-50' : 'hover:bg-slate-50'}`}
+             >
+               <Heart className={`h-5 w-5 transition-colors ${isSaved ? 'fill-red-500 text-red-500' : 'text-slate-600 hover:text-red-500'}`} />
              </button>
           </div>
         </div>

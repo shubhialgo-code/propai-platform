@@ -8,7 +8,12 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPE
 
 async function getAgentResponse(userQuery) {
   const mcpServerPath = path.resolve(__dirname, "../mcp/build/index.js");
-  const nodePath = "C:\\Program Files\\nodejs\\node.exe";
+  const nodePath = "node";
+
+  // Vercel / Serverless check: Stdio transport is not supported
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    return "AI Agent functionality is currently limited in the cloud environment. Please use the local development setup for full features.";
+  }
 
   const transport = new StdioClientTransport({
     command: nodePath,
