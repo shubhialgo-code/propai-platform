@@ -23,9 +23,15 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/properties', propertyRoutes);
-app.use('/api/favorites', favoriteRoutes);
-app.use('/api', aiRoutes);
+// Note: Vercel routes everything starting with /api to this file.
+// So we mount these at the root level relative to the /api mapping.
+app.use('/properties', propertyRoutes);
+app.use('/favorites', favoriteRoutes);
+app.use('/', aiRoutes); // ai-query, etc.
+
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', service: 'PropAI API', environment: process.env.NODE_ENV });
+});
 
 
 if (process.env.NODE_ENV !== 'production') {
