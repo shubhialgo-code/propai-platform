@@ -156,7 +156,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           title: z.string(),
           description: z.string().optional(),
           price: z.number(),
-          location_city: z.string(),
+          location_city: z.string().refine(city => ["Hyderabad", "Bangalore", "Bengaluru"].includes(city), {
+            message: "PropAI only supports listings in Hyderabad and Bangalore."
+          }),
           location_state: z.string().optional(),
           location_country: z.string().optional(),
           latitude: z.number().optional(),
@@ -203,12 +205,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { location, minPrice, maxPrice, bedrooms, propertyType, minArea } = args as any;
         const properties = await prisma.property.findMany({
           where: {
-            OR: location ? [
-              { location_city: { contains: location } },
-              { location_state: { contains: location } },
-              { title: { contains: location } },
-              { description: { contains: location } }
-            ] : undefined,
+            AND: [
+              {
+                location_city: { in: ["Hyderabad", "Bangalore", "Bengaluru"] }
+              },
+              location ? {
+                OR: [
+                  { location_city: { contains: location } },
+                  { location_state: { contains: location } },
+                  { title: { contains: location } },
+                  { description: { contains: location } }
+                ]
+              } : {}
+            ],
             price: { 
               gte: minPrice ?? undefined, 
               lte: maxPrice ?? undefined 
@@ -252,7 +261,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const properties = await prisma.property.findMany({
           where: {
             price: budget ? { lte: budget * 1.1 } : undefined,
-            location_city: location ? { contains: location } : undefined,
+            location_city: { in: ["Hyderabad", "Bangalore", "Bengaluru"] },
           },
           take: 5,
         });

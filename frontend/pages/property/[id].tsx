@@ -65,10 +65,16 @@ export default function PropertyDetail() {
     if (!property || isSaving) return;
     setIsSaving(true);
     try {
-      await favoriteService.save(DEFAULT_USER_ID, property.id);
-      setIsSaved(!isSaved);
+      const resp = await favoriteService.save(DEFAULT_USER_ID, property.id);
+      // Backend now returns { saved: boolean }
+      if (resp && typeof resp.saved === "boolean") {
+        setIsSaved(resp.saved);
+      } else {
+        setIsSaved(!isSaved);
+      }
     } catch (error) {
       console.error("Error toggling favorite", error);
+      // Catching error prevents the app from crashing with an overlay
     } finally {
       setIsSaving(false);
     }

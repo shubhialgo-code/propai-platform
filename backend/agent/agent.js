@@ -35,7 +35,13 @@ async function getAgentResponse(userQuery) {
     const { tools } = await mcpClient.listTools();
 
     // Generate tool-calling prompt for LLM
-    const messages = [{ role: "user", content: userQuery }];
+    const messages = [
+      { 
+        role: "system", 
+        content: "You are an AI Real Estate assistant for PropAI. You MUST ONLY search for and provide property information for Hyderabad and Bangalore. If asked for other locations, explain that PropAI currently only supports these two cities."
+      },
+      { role: "user", content: userQuery }
+    ];
     const availableTools = tools.map((t) => ({
       type: "function",
       function: {
@@ -51,16 +57,19 @@ async function getAgentResponse(userQuery) {
       // Basic extraction of search terms
       let location = null;
       const lowerQuery = userQuery.toLowerCase();
-      if (lowerQuery.includes("kondapur")) location = "Kondapur";
-      else if (lowerQuery.includes("gachibowli")) location = "Gachibowli";
-      else if (lowerQuery.includes("jubilee hills")) location = "Jubilee Hills";
-      else if (lowerQuery.includes("hyderabad")) location = "Hyderabad";
+      // Only allow Hyderabad and Bangalore
+      if (lowerQuery.includes("hyderabad")) location = "Hyderabad";
+      else if (lowerQuery.includes("bangalore") || lowerQuery.includes("bengaluru")) location = "Bangalore";
       
       let propertyType = null;
       if (lowerQuery.includes("villa")) propertyType = "Villa";
       else if (lowerQuery.includes("apartment")) propertyType = "Apartment";
 
-      console.log(`Demo Mode Search: location=${location}, type=${propertyType}`);
+      if (location) {
+        console.log(`Demo Mode Search: location=${location}, type=${propertyType}`);
+      } else {
+         return `[Demo Mode] I'm currently running without an AI key and I can only search for properties in Hyderabad and Bangalore. Try asking for "Villas in Hyderabad" or "Apartments in Bangalore".`;
+      }
 
       // Call MCP search tool directly
       // Map nulls to undefined to avoid Prisma complaining about explicit nulls in queries

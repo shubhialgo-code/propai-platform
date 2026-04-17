@@ -20,3 +20,17 @@ build/
 *.db
 *.db-journal
 *.sqlite
+
+# Scratch Scripts
+*check_db.js
+*get_user.js
+*add_properties.js
+*verify_ui_changes.js
+*test_ai.js
+task1
+
+# TypeScript Artifacts
+*.js.map
+*.d.ts.map
+backend/mcp/src/*.js
+!backend/mcp/src/index.ts

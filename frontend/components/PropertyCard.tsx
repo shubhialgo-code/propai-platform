@@ -34,10 +34,16 @@ export default function PropertyCard({ property, isSavedInitially = false }: Pro
     
     setIsSaving(true);
     try {
-      await favoriteService.save(DEFAULT_USER_ID, property.id);
-      setIsFavorite(!isFavorite);
+      const resp = await favoriteService.save(DEFAULT_USER_ID, property.id);
+      // Backend now returns { saved: boolean }
+      if (resp && typeof resp.saved === 'boolean') {
+        setIsFavorite(resp.saved);
+      } else {
+        setIsFavorite(!isFavorite);
+      }
     } catch (error) {
       console.error("Error toggling favorite on card", error);
+      // Catching error prevents the app from crashing with an overlay
     } finally {
       setIsSaving(false);
     }
