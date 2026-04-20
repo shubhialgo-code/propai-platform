@@ -1,6 +1,7 @@
 {
   "name": "propai-platform",
   "private": true,
+  "main": "api/server.js",
   "workspaces": [
     "frontend",
     "backend"

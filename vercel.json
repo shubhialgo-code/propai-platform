@@ -2,8 +2,8 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/backend/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/server"
     },
     {
       "source": "/(.*)",
@@ -11,7 +11,7 @@
     }
   ],
   "functions": {
-    "backend/index.js": {
+    "api/server.js": {
       "includeFiles": "backend/db/**"
     }
   }
