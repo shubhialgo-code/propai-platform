@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ArrowLeft, MapPin, BedDouble, Bath, Square, Heart, Share2, Shield, Mail, Phone, LayoutGrid } from "lucide-react";
