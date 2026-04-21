@@ -55,6 +55,7 @@ export default function PropertyCard({ property, isSavedInitially = false }: Pro
     : (property.images || []);
 
   const [imgError, setImgError] = useState(false);
+  const thumbnail = imageList.length > 0 ? imageList[0] : null;
 
   return (
     <div className="group overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-xl flex flex-col h-full">

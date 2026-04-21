@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ArrowLeft, MapPin, BedDouble, Bath, Square, Heart, Share2, Shield, Mail, Phone } from "lucide-react";
+import { ArrowLeft, MapPin, BedDouble, Bath, Square, Heart, Share2, Shield, Mail, Phone, LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import { propertyService, favoriteService } from "@/services/api.service";
 
