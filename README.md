@@ -25,7 +25,7 @@ The project is structured as a robust monorepo:
 
 - **Frontend**: Next.js, TypeScript, Lucide Icons, Framer Motion.
 - **Backend**: Node.js, Express, Prisma (SQLite), Model Context Protocol.
-- **DevOps**: GitHub Actions, Docker (Optional).
+- **DevOps**: GitHub Actions.
 
 ## 🚦 Getting Started
 

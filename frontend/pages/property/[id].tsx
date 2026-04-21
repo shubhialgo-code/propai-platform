@@ -30,6 +30,7 @@ export default function PropertyDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     // Wait for router to be ready and id to be available
@@ -131,12 +132,37 @@ export default function PropertyDetail() {
             <>
               {/* Main Image */}
               <div className="relative md:col-span-2 md:row-span-2 rounded-3xl overflow-hidden bg-slate-200 shadow-xl">
-                <Image src={property.images[0]} alt="Main" fill priority className="object-cover transition-transform hover:scale-105 duration-700" />
+                {!failedImages['main'] ? (
+                  <Image 
+                    src={property.images[0]} 
+                    alt="Main" 
+                    fill 
+                    priority 
+                    className="object-cover transition-transform hover:scale-105 duration-700"
+                    onError={() => setFailedImages(prev => ({ ...prev, ['main']: true }))}
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
+                    <Shield className="h-12 w-12 opacity-20" />
+                  </div>
+                )}
               </div>
               {/* Other Images up to 4 */}
               {(property.images as string[]).slice(1, 5).map((imgUrl: string, idx: number) => (
                 <div key={idx} className="relative rounded-3xl overflow-hidden bg-slate-200 shadow-lg">
-                  <Image src={imgUrl} alt={`Image ${idx + 2}`} fill className="object-cover hover:scale-110 transition-transform duration-500" />
+                  {!failedImages[idx] ? (
+                    <Image 
+                      src={imgUrl} 
+                      alt={`Image ${idx + 2}`} 
+                      fill 
+                      className="object-cover hover:scale-110 transition-transform duration-500"
+                      onError={() => setFailedImages(prev => ({ ...prev, [idx]: true }))}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-300">
+                      <LayoutGrid className="h-6 w-6 opacity-20" />
+                    </div>
+                  )}
                   {idx === 3 && (property.images as string[]).length > 5 && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-bold cursor-pointer hover:bg-black/70 transition-colors">
                       View all ({(property.images as string[]).length})

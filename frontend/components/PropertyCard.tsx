@@ -54,12 +54,12 @@ export default function PropertyCard({ property, isSavedInitially = false }: Pro
     ? JSON.parse(property.images) 
     : (property.images || []);
 
-  const thumbnail = imageList.length > 0 ? imageList[0] : null;
+  const [imgError, setImgError] = useState(false);
 
   return (
     <div className="group overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-xl flex flex-col h-full">
       <Link href={`/property/${property.id}`} className="block relative aspect-[16/10] overflow-hidden bg-slate-100">
-        {thumbnail ? (
+        {thumbnail && !imgError ? (
           <Image
             src={thumbnail}
             alt={property.title}
@@ -67,11 +67,12 @@ export default function PropertyCard({ property, isSavedInitially = false }: Pro
             priority
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onError={() => setImgError(true)}
           />
         ) : (
-          <div className="h-full w-full flex flex-col items-center justify-center text-slate-400 gap-2">
+          <div className="h-full w-full flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
             <LayoutGrid className="h-8 w-8 opacity-20" />
-            <span className="text-xs font-medium uppercase tracking-wider">No Image</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Image Unavailable</span>
           </div>
         )}
         <div className="absolute left-4 top-4 rounded-lg bg-white/90 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-600 backdrop-blur shadow-sm">

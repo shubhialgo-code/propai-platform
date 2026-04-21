@@ -23,11 +23,13 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
-// Note: Vercel routes everything starting with /api to this file.
-// So we mount these at the root level relative to the /api mapping.
-app.use('/properties', propertyRoutes);
-app.use('/favorites', favoriteRoutes);
-app.use('/', aiRoutes); // ai-query, etc.
+// Note: We mount all API routes under /api so both Vercel serverless and local dev share the same base path.
+const apiRouter = express.Router();
+apiRouter.use('/properties', propertyRoutes);
+apiRouter.use('/favorites', favoriteRoutes);
+apiRouter.use('/', aiRoutes); // ai-query, etc.
+
+app.use('/api', apiRouter);
 
 app.get('/', (req, res) => {
   res.json({ status: 'OK', service: 'PropAI API', environment: process.env.NODE_ENV });
