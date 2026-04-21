@@ -31,7 +31,7 @@ export default function ChatBot() {
     try {
       const response = await aiService.query(userMessage);
       setMessages((prev) => [...prev, { role: "bot", content: response }]);
-    } catch (_error) {
+    } catch {
       setMessages((prev) => [...prev, { role: "bot", content: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." }]);
     } finally {
       setIsLoading(false);
