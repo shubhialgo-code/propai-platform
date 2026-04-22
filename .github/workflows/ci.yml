@@ -28,11 +28,16 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
+    - name: Type Check Frontend
+      run: cd frontend && npx tsc --noEmit
+
     - name: Lint Frontend
       run: cd frontend && npm run lint -- --max-warnings 10
 
     - name: Build Frontend
       run: cd frontend && npm run build
+      env:
+        NEXT_TELEMETRY_DISABLED: 1
 
   deploy:
     name: Continuous Deployment
