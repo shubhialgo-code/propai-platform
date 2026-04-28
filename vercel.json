@@ -12,7 +12,7 @@
   ],
   "functions": {
     "api/server.js": {
-      "includeFiles": "backend/db/**"
+      "includeFiles": "backend/**"
     }
   }
 }
